@@ -606,11 +606,12 @@ And [customize the UI](https://docs.chainlit.io/customisation/overview) in `.cha
 
 ## Emerging **standards**
 
-- **MCP** (Model Context Protocol): Standardizes tool calls and context handling across different models 
+- [**MCP**](https://modelcontextprotocol.io) (Model Context Protocol): Standardizes tool calls and context handling across different models 
   - Gives LLM direct access to data and actions. Enables any digital infrastructure to expose actionable functions to LLM (e.g. gmail exposes `read_my_emails`, `send_email_to`)
-- **A2A** (Agent to Agent): Facilitates agent-to-agent communication and collaboration
+  - Recently released [MCP registry](https://github.com/modelcontextprotocol/registry), e.g. [GitHub MCP registry](https://github.com/mcp/)
+- [**A2A**](https://a2a-protocol.org/latest/) (Agent to Agent): Facilitates agent-to-agent communication and collaboration
   - 1 agent is not enough for complex tasks, multiple agents with specific roles are needed, and they need to communicate 
-- **AG-UI**: Handles human-in-the-loop interaction and streaming UI updates
+- [**AG-UI**](https://docs.ag-ui.com/introduction): Handles human-in-the-loop interaction and streaming UI updates
   - Most agents will need to send their results to the human at some point
 
 ---
