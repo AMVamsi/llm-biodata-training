@@ -595,7 +595,7 @@ And [customize the UI](https://docs.chainlit.io/customisation/overview) in `.cha
 
 ## Next step: "AI agent"
 
-1. Declare a few tools the LLM can use, e.g. `get_relevant_docs` and `execute_sparql_query`
+1. Declare a few tools the LLM can use through a MCP server, e.g. `get_relevant_docs` and `execute_sparql_query`
 2. Loop on these tools until the LLM solved the question
 
 = classic "Agentic loop" on which most coding agents are build (GitHub Copilot, Claude Code, OpenAI Codex...)
@@ -651,6 +651,122 @@ def execute_sparql_query(sparql_query: str, endpoint_url: str) -> str:
   
 if __name__ == "__main__":
     mcp.run(transport="streamable-http")
+```
+
+> You can also add a function to retrieve relevant documents.
+
+---
+
+## MCP server
+
+Start the server:
+
+```sh
+uv run mcp_server.py
+```
+
+Add this server to your favorite LLM client (e.g. VSCode, Claude Desktop, ChatGPT Pro...), e.g. on VSCode:
+
+`Ctrl + shift + P` > `MCP: Open User Configuration` 
+
+```json
+{
+	"servers": {
+		"biodata-mcp-server": {
+			"url": "http://127.0.0.1:8888/mcp",
+		}
+	},
+	"inputs": []
+}
+```
+
+Click on `Start server` in the JSON file in the VSCode UI, and talk to GitHub Copilot.
+
+---
+
+## MCP server client
+
+Connect to your MCP server, using the official MCP SDK:
+
+```python
+# /// script
+# requires-python = ">=3.9"
+# dependencies = ["mcp"]
+# ///
+
+import asyncio
+
+from mcp import ClientSession
+from mcp.client.streamable_http import streamablehttp_client
+
+mcp_url = "http://localhost:8888/mcp"
+
+async def main():
+    # Use official MCP SDK client
+    async with streamablehttp_client(mcp_url) as (
+        read_stream,
+        write_stream,
+        _,
+    ):
+        # Create a session using the client streams
+        async with ClientSession(read_stream, write_stream) as session:
+            # Initialize the connection
+            await session.initialize()
+            # List available tools
+            tools = await session.list_tools()
+            print(f"Available tools: {[tool.name for tool in tools.tools]}")
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+---
+
+## MCP server client
+
+You can easily build a reactive agent using the [LangChain MCP adapter](https://docs.langchain.com/oss/python/langchain/mcp)
+
+> ⚠️🔮 We need to use the not yet released v1 of LangChain
+
+```python
+# /// script
+# requires-python = ">=3.12"
+# dependencies = ["mcp", "langchain-mcp-adapters", "langchain>=1.0.0a10", "langchain-mistralai"]
+# ///
+import asyncio
+
+from langchain_mcp_adapters.client import MultiServerMCPClient
+from langchain.agents import create_agent
+
+mcp_url = "http://localhost:8888/mcp"
+
+async def main():
+    client = MultiServerMCPClient(
+        {
+            "biodata": {
+                "transport": "streamable_http",
+                "url": mcp_url,
+            }
+        }
+    )
+    tools = await client.get_tools()
+    agent = create_agent(
+        "mistralai:mistral-small-latest",
+        tools
+    )
+    resp = await agent.ainvoke(
+        {"messages": [{"role": "user", "content": "Get the uniprot ID for HBB"}]}
+    )
+    print(resp)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+Run with:
+
+```sh
+uv run --env-file .env --prerelease=allow mcp_client.py
 ```
 
 ---
