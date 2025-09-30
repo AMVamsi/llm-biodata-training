@@ -782,4 +782,6 @@ Live deployment for SIB endpoints (UniProt, Bgee, OMA, Rhea…)
 
 [Theorical slides here](2025-05-19-LLM_from_Theory_to_Practice.pdf)
 
+[Self-host LLM article](https://blog.e-infra.cz/blog/run-llm/)
+
 Standalone components available as a pip package: [pypi.org/project/sparql-llm](https://pypi.org/project/sparql-llm)
