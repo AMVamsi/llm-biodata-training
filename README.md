@@ -4,7 +4,7 @@
 
 Course description: https://www.sib.swiss/training/course/20250930_USLLM
 
-- [Theory slides (morning session) as PDF here](https://drive.google.com/file/d/161020xjdCT0z6K_9Dfv5dZm6ABFE4Cvw/view)
+- [Theory slides (morning session) as PDF here](https://github.com/sib-swiss/llm-biodata-training/blob/main/public/2025-09-30-LLM_From_Theory_To_Practice.pdf)
 - Pratical slides: https://sib-swiss.github.io/llm-biodata-training
 
 ## 🛠 Slides development
